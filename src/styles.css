@@ -389,23 +389,26 @@ body {
 .tx-amount.up { color: #16a34a; }
 .tx-amount.down { color: #ea580c; }
 
-/* Modal / sheet */
+/* Modal / sheet — fixed to the viewport so it always displays fully,
+   above the bottom nav, never clipped. */
 .modal-scrim {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  background: rgba(8, 12, 20, 0.5);
+  background: rgba(8, 12, 20, 0.55);
   display: flex;
   align-items: flex-end;
-  z-index: 50;
+  justify-content: center;
+  z-index: 1000;
   animation: fade 0.15s ease;
 }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 .sheet {
   width: 100%;
+  max-width: 430px;
   background: var(--white);
   border-radius: 22px 22px 0 0;
-  padding: 8px 18px calc(22px + env(safe-area-inset-bottom, 0));
-  max-height: 82%;
+  padding: 8px 18px calc(30px + env(safe-area-inset-bottom, 0));
+  max-height: 86dvh;
   overflow-y: auto;
   animation: rise 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -521,18 +524,11 @@ body {
 /* QR */
 .qr-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 8px 0 12px; }
 .qr-pseudo { font-weight: 800; font-size: 18px; color: var(--ink); }
-.qr-grid {
-  width: 210px; height: 210px;
-  display: grid;
-  grid-template-columns: repeat(21, 1fr);
-  grid-template-rows: repeat(21, 1fr);
-  padding: 12px;
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+.qr-img {
+  width: 230px; height: 230px; display: block;
+  background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 10px;
 }
-.qr-grid span { background: transparent; }
-.qr-grid span.on { background: var(--ink); border-radius: 1px; }
+.qr-loading { width: 230px; height: 230px; display: grid; place-items: center; color: var(--ink-soft); }
 
 /* Game preview modal */
 .game-preview { display: flex; flex-direction: column; align-items: center; gap: 16px; }
@@ -606,13 +602,16 @@ body {
 .lux-title { font-size: 26px; font-weight: 800; color: #0d1c32; letter-spacing: -0.02em; margin: 0; }
 .lux-sub { font-size: 14px; font-weight: 600; color: #75777e; margin: 8px 0 0; }
 
-/* Hero */
+/* Hero (button reset: no default padding/border, image fills edge to edge) */
 .lux-hero {
   display: block; position: relative; width: 100%; height: 300px;
-  border-radius: 28px; overflow: hidden; border: 1px solid #e1e3e4;
+  padding: 0; margin: 0; border: none; outline: none;
+  font-family: inherit; text-align: left; cursor: pointer;
+  border-radius: 28px; overflow: hidden;
   box-shadow: 0 10px 30px rgba(13, 28, 50, 0.12);
   background: linear-gradient(135deg, #1e3a5f, #0d1c32);
 }
+.lux-hero-img { position: absolute; inset: 0; }
 .lux-hero-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
 .lux-hero:active .lux-hero-img { transform: scale(1.04); }
 .lux-hero-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.62), rgba(0,0,0,0.12) 45%, transparent); }
@@ -634,6 +633,7 @@ body {
 .lux-partners { display: flex; flex-direction: column; gap: 12px; }
 .lux-partner {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; font-family: inherit; text-align: left; cursor: pointer;
   background: #fff; border: 2px solid #e1e3e4; border-radius: 18px; padding: 14px;
   text-decoration: none; transition: border-color 0.15s, transform 0.06s;
 }
@@ -642,6 +642,12 @@ body {
 .lux-partner-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
 .lux-logo { width: 48px; height: 48px; border-radius: 12px; overflow: hidden; border: 1px solid #e1e3e4; background: #fff; flex: 0 0 auto; display: grid; place-items: center; }
 .lux-logo img { width: 100%; height: 100%; }
+.lux-mono {
+  width: 48px; height: 48px; border-radius: 12px; flex: 0 0 auto;
+  background: #0d1c32; color: #fff; display: grid; place-items: center;
+  font-weight: 800; font-size: 20px;
+}
+.lux-mono.big { width: 92px; height: 92px; border-radius: 20px; font-size: 40px; }
 .lux-partner-name { font-size: 16px; font-weight: 700; color: #0d1c32; }
 .lux-partner-sub { font-size: 12px; font-weight: 600; color: #75777e; margin-top: 1px; }
 .lux-pill { flex: 0 0 auto; background: #0d1c32; color: #fff; font-size: 13px; font-weight: 700; padding: 7px 12px; border-radius: 10px; white-space: nowrap; }
@@ -649,7 +655,11 @@ body {
 
 /* Airlines */
 .lux-airlines { display: flex; flex-direction: column; gap: 18px; }
-.lux-airline { display: block; background: #fff; border: 1px solid #e1e3e4; border-radius: 24px; overflow: hidden; text-decoration: none; box-shadow: 0 6px 18px rgba(13,28,50,0.06); transition: transform 0.06s; }
+.lux-airline {
+  display: block; width: 100%; padding: 0; font-family: inherit; text-align: left; cursor: pointer;
+  background: #fff; border: 1px solid #e1e3e4; border-radius: 24px; overflow: hidden;
+  text-decoration: none; box-shadow: 0 6px 18px rgba(13,28,50,0.06); transition: transform 0.06s;
+}
 .lux-airline:active { transform: scale(0.995); }
 .lux-airline-media { position: relative; height: 180px; background: linear-gradient(135deg, #334155, #0d1c32); overflow: hidden; }
 .lux-airline-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }

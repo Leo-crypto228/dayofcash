@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useGame } from './useGame.js'
 import { HOUSE_EDGE, riggedChance, round2 } from './engine.js'
-import { SBet, ModeToggle, fmt } from './parts.jsx'
+import { SBet, fmt } from './parts.jsx'
 
 export default function Limbo({ game }) {
   const { balance, bet, betInput, setBet, canAfford, settle, half, double } = useGame(game.name, 1)
@@ -65,7 +65,6 @@ export default function Limbo({ game }) {
         </div>
       </div>
 
-      <ModeToggle mode="manual" />
     </div>
   )
 }

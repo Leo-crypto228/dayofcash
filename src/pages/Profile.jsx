@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import QRCode from 'qrcode'
 import { useStore, formatEUR } from '../store/store.jsx'
 import { useAuth } from '../store/auth.jsx'
 import { playCash } from '../store/sound.js'
@@ -19,6 +20,16 @@ export default function Profile() {
   const canWithdraw = remaining <= 0
 
   const close = () => { setModal(null); setAmount('') }
+
+  // Real scannable QR — links to the app with the user's pseudo.
+  const [qrUrl, setQrUrl] = useState(null)
+  useEffect(() => {
+    if (modal !== 'qr') return
+    const payload = `https://dayofcash.pages.dev/?to=${encodeURIComponent(user?.email || '')}`
+    QRCode.toDataURL(payload, { width: 420, margin: 1, color: { dark: '#0b1220', light: '#ffffff' } })
+      .then(setQrUrl)
+      .catch(() => setQrUrl(null))
+  }, [modal, user])
 
   const submitDeposit = () => {
     if (Number(amount) > 0) playCash()
@@ -181,7 +192,7 @@ export default function Profile() {
 
       <Modal open={modal === 'qr'} title="QR Code" onClose={close}>
         <div className="qr-wrap">
-          <QrBox />
+          {qrUrl ? <img className="qr-img" src={qrUrl} alt="QR code" /> : <div className="qr-loading">Génération…</div>}
           <div className="qr-pseudo">@{state.user.name || user?.name || ''}</div>
           <p className="muted">Scanne pour recevoir un paiement sur ton compte dayofcash.</p>
         </div>
@@ -276,20 +287,3 @@ function Row({ k, v }) {
   )
 }
 
-function QrBox() {
-  // Deterministic pseudo-QR grid (visual only).
-  const cells = []
-  for (let i = 0; i < 21 * 21; i++) {
-    const x = i % 21, y = Math.floor(i / 21)
-    const corner = (x < 7 && y < 7) || (x > 13 && y < 7) || (x < 7 && y > 13)
-    const on = corner ? (x % 6 === 0 || y % 6 === 0 || (x > 1 && x < 5 && y > 1 && y < 5)) : (x * 7 + y * 13) % 3 === 0
-    cells.push(on)
-  }
-  return (
-    <div className="qr-grid">
-      {cells.map((on, i) => (
-        <span key={i} className={on ? 'on' : ''} />
-      ))}
-    </div>
-  )
-}

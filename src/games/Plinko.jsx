@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { useGame } from './useGame.js'
 import { plinkoPayouts, PLINKO_PULL } from './engine.js'
-import { SBet, ModeToggle } from './parts.jsx'
+import { SBet } from './parts.jsx'
 
 const RISKS = [['Low', 'Facile'], ['Medium', 'Moyen'], ['High', 'Difficile']]
 
@@ -102,7 +102,6 @@ export default function Plinko({ game }) {
         </div>
       </div>
 
-      <ModeToggle mode="manual" />
     </div>
   )
 }

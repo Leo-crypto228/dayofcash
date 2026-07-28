@@ -31,6 +31,11 @@ export default function GameScreen({ gameId, onBack }) {
         <span className="game-balance">{formatEUR(state.balance)}</span>
       </header>
       <div className="game-scroll">
+        {state.balance <= 0 && (
+          <div className="no-funds">
+            Solde à €0 — crédite ton compte dans <strong>Profile → Espace admin</strong> pour jouer.
+          </div>
+        )}
         <Comp game={game} />
       </div>
     </div>

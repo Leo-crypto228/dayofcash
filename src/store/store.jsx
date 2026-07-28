@@ -12,6 +12,11 @@ function loadNotifs(uid) {
   try { return JSON.parse(localStorage.getItem(notifKey(uid))) || null } catch { return null }
 }
 
+const avatarKey = (uid) => `dayofcash.avatar.${uid}`
+function loadAvatar(uid) {
+  try { return localStorage.getItem(avatarKey(uid)) } catch { return null }
+}
+
 const DEFAULT_NOTIFS = { promotions: true, results: true, security: true }
 
 const emptyState = {
@@ -39,7 +44,7 @@ export function StoreProvider({ children }) {
     setState({
       user: {
         name: prof?.name || user.name,
-        avatar: `https://i.pravatar.cc/120?u=${encodeURIComponent(user.email)}`,
+        avatar: loadAvatar(user.id) || `https://i.pravatar.cc/120?u=${encodeURIComponent(user.email)}`,
       },
       balance: Number(prof?.balance ?? 0),
       target: Number(prof?.target ?? 1000),
@@ -94,6 +99,10 @@ function optimistic(state, action, user) {
       const next = { ...state.notifications, [action.key]: !state.notifications[action.key] }
       if (user) { try { localStorage.setItem(notifKey(user.id), JSON.stringify(next)) } catch { /* ignore */ } }
       return { ...state, notifications: next }
+    }
+    case 'SET_AVATAR': {
+      if (user) { try { localStorage.setItem(avatarKey(user.id), action.dataUrl) } catch { /* quota */ } }
+      return { ...state, user: { ...state.user, avatar: action.dataUrl } }
     }
     default:
       return state

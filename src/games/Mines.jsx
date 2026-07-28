@@ -102,7 +102,6 @@ export default function Mines({ game }) {
         <span className="sbet-coin">€</span>
       </div>
 
-      <ModeToggle mode="manual" />
     </div>
   )
 }

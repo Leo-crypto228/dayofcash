@@ -38,6 +38,13 @@
 .game-scroll { flex: 1; overflow-y: auto; }
 .game-body { display: flex; flex-direction: column; gap: 14px; padding: 16px; min-height: 100%; }
 
+.no-funds {
+  margin: 14px 16px -4px; padding: 12px 14px; border-radius: 10px;
+  background: rgba(255, 216, 0, 0.12); border: 1px solid rgba(255, 216, 0, 0.35);
+  color: #ffd800; font-size: 13px; font-weight: 600; line-height: 1.45;
+}
+.no-funds strong { color: #fff; }
+
 /* ---- Bet panel (Montant du Pari) ---------------------------------------- */
 .sbet { display: flex; flex-direction: column; gap: 10px; }
 .sbet-label { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--s-muted); font-weight: 600; }

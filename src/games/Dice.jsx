@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useGame } from './useGame.js'
 import { diceMultiplier, riggedChance, round2 } from './engine.js'
-import { SBet, ModeToggle } from './parts.jsx'
+import { SBet } from './parts.jsx'
 
 export default function Dice({ game }) {
   const { balance, bet, betInput, setBet, canAfford, settle, half, double } = useGame(game.name, 1)
@@ -74,7 +74,6 @@ export default function Dice({ game }) {
 
       <button className="s-action" onClick={play} disabled={!canAfford || rolling}>Pari</button>
       <SBet value={betInput} setBet={setBet} half={half} double={double} balance={balance} />
-      <ModeToggle mode="manual" />
     </div>
   )
 }
