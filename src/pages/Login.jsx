@@ -66,8 +66,6 @@ export default function Login() {
       <button className="auth2-switch" type="button" onClick={switchMode}>
         {mode === 'login' ? "Pas de compte ? S'inscrire" : 'Déjà un compte ? Se connecter'}
       </button>
-
-      <p className="auth2-legal">Argent fictif · aucun argent réel</p>
     </div>
   )
 }
