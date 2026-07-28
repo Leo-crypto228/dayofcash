@@ -566,45 +566,96 @@ body {
 .menu-item:active { background: #eef2f7; }
 
 /* =========================================================================
-   AUTH / LOGIN (minimal dark)
+   AUTH / LOGIN (clean, white)
    ========================================================================= */
-.auth2 {
+.lg {
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 26px;
-  padding: 32px 26px calc(32px + env(safe-area-inset-bottom, 0));
-  background: #0f212e;
-  color: #fff;
+  background: #ffffff;
+  color: #0d1c32;
   overflow-y: auto;
+  overflow-x: hidden;
 }
-.auth2-top { text-align: center; }
-.auth2-logo { font-weight: 800; letter-spacing: 6px; font-size: 28px; }
-.auth2-tag { color: #b1bad3; font-size: 14px; margin: 10px 0 0; font-weight: 500; }
-.auth2-form { display: flex; flex-direction: column; gap: 12px; }
-.auth2-input {
-  border: 1px solid #2f4553; border-radius: 12px; padding: 16px;
-  font-size: 16px; color: #fff; outline: none; background: #1a2c38;
+.lg-brand {
+  flex: 0 0 auto;
+  padding: 22px 24px 0;
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-size: 17px;
+  color: #0d1c32;
 }
-.auth2-input::placeholder { color: #6b7d8c; }
-.auth2-input:focus { border-color: #557086; }
-.auth2-error {
-  background: rgba(237, 65, 99, 0.12); color: #ff7b96;
-  border: 1px solid rgba(237, 65, 99, 0.4);
-  border-radius: 10px; padding: 11px 13px; font-size: 13px; font-weight: 600;
+.lg-body { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; padding: 24px 24px 28px; }
+.lg-title { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 24px; }
+.lg-form { display: flex; flex-direction: column; gap: 12px; }
+
+.lg-field { position: relative; display: block; }
+.lg-field input {
+  width: 100%;
+  border: 1.5px solid #e3e6ea; border-radius: 14px;
+  padding: 17px 46px 17px 16px;
+  font-size: 16px; color: #0d1c32; outline: none; background: #fff;
+  font-family: inherit;
+  transition: border-color 0.15s;
 }
-.auth2-submit {
-  border: none; border-radius: 12px; padding: 17px;
-  background: #00e701; color: #05310a; font-weight: 800; font-size: 16px;
+.lg-field input::placeholder { color: #9aa4b2; }
+.lg-field input:focus { border-color: #0d1c32; }
+.lg-check {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #16c60c; display: grid; place-items: center;
+  animation: checkPop 0.22s cubic-bezier(0.2, 1.3, 0.4, 1);
+}
+@keyframes checkPop { from { transform: translateY(-50%) scale(0.3); opacity: 0; } to { transform: translateY(-50%) scale(1); opacity: 1; } }
+
+.lg-error {
+  background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;
+  border-radius: 12px; padding: 12px 14px; font-size: 13.5px; font-weight: 600;
+}
+.lg-switch {
+  border: none; background: none; color: #5b6472; font-weight: 600;
+  font-size: 14.5px; cursor: pointer; text-align: left; padding: 4px 2px; margin-top: 2px;
+  align-self: flex-start;
+}
+.lg-switch:hover { color: #0d1c32; }
+.lg-submit {
+  border: none; border-radius: 14px; padding: 18px;
+  background: #16c60c; color: #ffffff; font-weight: 800; font-size: 16.5px;
   cursor: pointer; margin-top: 6px;
+  font-family: inherit;
 }
-.auth2-submit:hover { filter: brightness(1.05); }
-.auth2-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-.auth2-switch {
-  border: none; background: none; color: #b1bad3; font-weight: 700;
-  font-size: 14px; cursor: pointer; text-align: center; padding: 4px;
+.lg-submit:hover { filter: brightness(1.05); }
+.lg-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Scrolling strips */
+.lg-strip {
+  flex: 0 0 auto;
+  overflow: hidden;
+  margin-bottom: 16px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
+.lg-strip:last-child { margin-bottom: calc(22px + env(safe-area-inset-bottom, 0px)); }
+.lg-track { display: flex; gap: 12px; width: max-content; animation: slide 46s linear infinite; }
+.lg-track.rev { animation: slideRev 52s linear infinite; }
+@keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes slideRev { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+.lg-tile {
+  flex: 0 0 auto; width: 76px; aspect-ratio: 3 / 4;
+  border-radius: 14px; overflow: hidden; background: #eef1f4;
+  box-shadow: 0 4px 12px rgba(13, 28, 50, 0.10);
+}
+.lg-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.lg-chip {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 8px;
+  background: #fff; border: 1.5px solid #e3e6ea; border-radius: 12px;
+  padding: 8px 12px 8px 8px;
+}
+.lg-chip img { width: 26px; height: 26px; border-radius: 7px; object-fit: cover; flex: 0 0 auto; background: #fff; }
+.lg-chip-name { font-size: 13px; font-weight: 700; white-space: nowrap; }
+.lg-chip-cb { font-size: 12px; font-weight: 800; color: #16a34a; }
 
 /* =========================================================================
    VOYAGE LUXE (Explore) — cards link to real platforms

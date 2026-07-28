@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useGame } from './useGame.js'
-import { minesMultiplier, minesBombChance } from './engine.js'
+import { minesMultiplier, minesBombChance, capPayout, capProfit } from './engine.js'
 import { SBet, ModeToggle, Gem, Bomb, fmt } from './parts.jsx'
 
 const TOTAL = 25
@@ -72,7 +72,7 @@ export default function Mines({ game }) {
       </div>
 
       {playing && safeRevealed > 0 ? (
-        <button className="s-action green" onClick={cashout}>Encaisser {fmt(bet * mult)}</button>
+        <button className="s-action green" onClick={cashout}>Encaisser {fmt(capPayout(bet, mult))}</button>
       ) : (
         <button className="s-action" onClick={start} disabled={!canAfford || playing}>Pari</button>
       )}
@@ -97,7 +97,7 @@ export default function Mines({ game }) {
       <div className="mines-profit">
         <div>
           <div className="lbl">Profit total ({mult.toFixed(2)}×)</div>
-          <div className="val">{fmt(Math.max(0, profit))}</div>
+          <div className="val">{fmt(Math.max(0, capProfit(profit)))}</div>
         </div>
         <span className="sbet-coin">€</span>
       </div>

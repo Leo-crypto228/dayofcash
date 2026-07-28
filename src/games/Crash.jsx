@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useGame } from './useGame.js'
-import { sampleCrash, round2 } from './engine.js'
+import { sampleCrash, round2, capPayout } from './engine.js'
 import { SBet, fmt } from './parts.jsx'
 
 const K = 0.10 // growth rate
@@ -93,7 +93,7 @@ export default function Crash({ game }) {
       </div>
 
       {phase === 'running' && !cashedRef.current ? (
-        <button className="s-action green" onClick={cashout}>Encaisser {fmt(bet * mult)}</button>
+        <button className="s-action green" onClick={cashout}>Encaisser {fmt(capPayout(bet, mult))}</button>
       ) : (
         <button className="s-action" onClick={start} disabled={!canAfford || phase === 'running'}>Pari</button>
       )}

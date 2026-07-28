@@ -3,7 +3,8 @@ import { useGame } from './useGame.js'
 import { plinkoPayouts, PLINKO_PULL } from './engine.js'
 import { SBet } from './parts.jsx'
 
-const RISKS = [['Low', 'Facile'], ['Medium', 'Moyen'], ['High', 'Difficile']]
+// The former "Low" tier is gone: Medium is now shown as Facile, High as Moyen.
+const RISKS = [['Medium', 'Facile'], ['High', 'Moyen']]
 
 // Bin color by payout magnitude (yellow edges -> green center, like the ref).
 const binColor = (m, max) => {

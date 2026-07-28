@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { useGame } from './useGame.js'
-import { HOUSE_EDGE, round2 } from './engine.js'
+import { HOUSE_EDGE, round2, capPayout, capProfit } from './engine.js'
 import { SBet, fmt } from './parts.jsx'
 
-const DIFF = { Facile: 0.05, Moyen: 0.11, Difficile: 0.18, Expert: 0.26 }
+// Former easiest tier removed: old Moyen is now Facile, old Difficile is Moyen.
+const DIFF = { Facile: 0.11, Moyen: 0.18 }
 
 export default function Pump({ game }) {
   const { balance, bet, betInput, setBet, canAfford, settle, half, double } = useGame(game.name, 1)
-  const [diff, setDiff] = useState('Moyen')
+  const [diff, setDiff] = useState('Facile')
   const [playing, setPlaying] = useState(false)
   const [pumps, setPumps] = useState(0)
   const [popped, setPopped] = useState(false)
@@ -69,7 +70,7 @@ export default function Pump({ game }) {
       {playing ? (
         <>
           <button className="s-action green" onClick={cashout} disabled={pumps === 0}>
-            Encaisser {fmt(bet * mult)}
+            Encaisser {fmt(capPayout(bet, mult))}
           </button>
           <button className="s-action grey" onClick={pump}>Gonfler</button>
         </>
@@ -82,7 +83,7 @@ export default function Pump({ game }) {
       <div className="mines-profit">
         <div>
           <div className="lbl">Profit total ({mult.toFixed(2)}×)</div>
-          <div className="val">{fmt(Math.max(0, bet * mult - bet))}</div>
+          <div className="val">{fmt(Math.max(0, capProfit(bet * mult - bet)))}</div>
         </div>
         <span className="sbet-coin">€</span>
       </div>

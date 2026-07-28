@@ -5,6 +5,12 @@
 
 export const HOUSE_EDGE = 0.99 // what the UI *displays* (fair-looking)
 
+// Hard ceiling on the net profit of any single resolved bet, no exception.
+export const MAX_WIN = 50
+export const capProfit = (profit) => Math.min(profit, MAX_WIN)
+// Total amount actually paid back for a bet at `mult` (stake + capped profit).
+export const capPayout = (bet, mult) => bet + capProfit(bet * mult - bet)
+
 // House configuration — the real odds applied when resolving bets.
 export const RIG = {
   rtp: 0.90,        // effective payout target (vs 0.99 displayed)

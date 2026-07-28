@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useGame } from './useGame.js'
-import { HOUSE_EDGE, riggedChance, round2 } from './engine.js'
+import { HOUSE_EDGE, riggedChance, round2, capProfit } from './engine.js'
 import { SBet, fmt } from './parts.jsx'
 
 export default function Limbo({ game }) {
@@ -60,7 +60,7 @@ export default function Limbo({ game }) {
       <div className="s-field">
         <label>Profit sur une Victoire</label>
         <div className="s-box">
-          <span style={{ color: 'var(--s-text)', fontWeight: 600 }}>{fmt(Math.max(0, bet * t - bet))}</span>
+          <span style={{ color: 'var(--s-text)', fontWeight: 600 }}>{fmt(Math.max(0, capProfit(bet * t - bet)))}</span>
           <span className="sbet-coin">€</span>
         </div>
       </div>

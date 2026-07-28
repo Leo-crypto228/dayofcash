@@ -385,7 +385,9 @@
   box-shadow: 2px 2px 0 #0c4488, 4px 4px 0 #093566;
 }
 .bj-side { display: flex; flex-direction: column; align-items: center; gap: 8px; min-height: 96px; justify-content: center; }
-.bj-hand-block { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.bj-hands { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; justify-content: center; }
+.bj-hand-block { display: flex; flex-direction: column; align-items: center; gap: 8px; transition: opacity 0.2s; }
+.bj-hand-block.active .bj-badge { box-shadow: 0 0 0 2px var(--s-green); }
 .bj-badge {
   background: #0c1b25; border: 1px solid var(--s-cell); color: #fff;
   padding: 4px 14px; border-radius: 999px; font-weight: 800; font-size: 14px;

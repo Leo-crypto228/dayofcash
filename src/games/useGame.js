@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import { useStore, formatEUR } from '../store/store.jsx'
 import { useToast } from '../store/toast.jsx'
 import { playWin, playLose } from '../store/sound.js'
-import { round2 } from './engine.js'
+import { round2, capProfit } from './engine.js'
 
 // Bet amount state + settlement helper shared by every game.
 // The input is kept as a raw string so the field can be fully cleared.
@@ -28,7 +28,8 @@ export function useGame(gameName, defaultBet = 1) {
   // delta = net change (win: +profit, loss: -bet). meta.mult shows on toast.
   const settle = useCallback(
     (delta, meta = {}) => {
-      const d = round2(delta)
+      // Hard cap: a single bet can never pay more than MAX_WIN in profit.
+      const d = round2(delta > 0 ? capProfit(delta) : delta)
       dispatch({ type: 'BET_RESULT', delta: d, game: gameName })
       if (d > 0) {
         playWin()

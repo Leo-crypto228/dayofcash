@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useGame } from './useGame.js'
-import { freshDeck, HOUSE_EDGE, isRed, round2, hiloDraw } from './engine.js'
+import { freshDeck, HOUSE_EDGE, isRed, round2, hiloDraw, capPayout, capProfit } from './engine.js'
 import { SBet, fmt } from './parts.jsx'
 
 export default function Hilo({ game }) {
@@ -86,11 +86,11 @@ export default function Hilo({ game }) {
         <div className="s-grid2">
           <div className="s-field">
             <label>Profit Supérieur ({stepHigher.toFixed(2)}×)</label>
-            <div className="s-box"><span style={{ fontWeight: 600 }}>{fmt(Math.max(0, bet * mult * stepHigher - bet))}</span></div>
+            <div className="s-box"><span style={{ fontWeight: 600 }}>{fmt(Math.max(0, capProfit(bet * mult * stepHigher - bet)))}</span></div>
           </div>
           <div className="s-field">
             <label>Profit Inférieur ({stepLower.toFixed(2)}×)</label>
-            <div className="s-box"><span style={{ fontWeight: 600 }}>{fmt(Math.max(0, bet * mult * stepLower - bet))}</span></div>
+            <div className="s-box"><span style={{ fontWeight: 600 }}>{fmt(Math.max(0, capProfit(bet * mult * stepLower - bet)))}</span></div>
           </div>
         </div>
 
@@ -105,7 +105,7 @@ export default function Hilo({ game }) {
       </div>
 
       {playing && mult > 1 ? (
-        <button className="s-action green" onClick={cashout}>Encaisser {fmt(bet * mult)}</button>
+        <button className="s-action green" onClick={cashout}>Encaisser {fmt(capPayout(bet, mult))}</button>
       ) : (
         <button className="s-action" onClick={start} disabled={!canAfford || playing}>Pari</button>
       )}

@@ -3,10 +3,10 @@ import { useGame } from './useGame.js'
 import { SBet, fmt } from './parts.jsx'
 
 // Segment sets per risk — real RTP ≈ 0.90 (sum/segments).
+// The former easiest tier is gone: old Moyen is now Facile, old Difficile is Moyen.
 const CONFIGS = {
-  Facile:    [0, 0, 1.2, 1.2, 1.2, 1.2, 1.2, 1.2, 1.5, 1.5],
-  Moyen:     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.5, 1.5, 1.5, 1.5, 1.5, 1.7, 2, 3, 4],
-  Difficile: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18],
+  Facile: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.5, 1.5, 1.5, 1.5, 1.5, 1.7, 2, 3, 4],
+  Moyen:  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18],
 }
 const COLOR = {
   0: '#2f4553', 1.2: '#00e701', 1.5: '#00e701', 1.7: '#e2e8f0',
@@ -25,7 +25,7 @@ function spread(arr) {
 
 export default function Wheel({ game }) {
   const { balance, bet, betInput, setBet, canAfford, settle, half, double } = useGame(game.name, 1)
-  const [risk, setRisk] = useState('Moyen')
+  const [risk, setRisk] = useState('Facile')
   const [angle, setAngle] = useState(0)
   const [spinning, setSpinning] = useState(false)
   const [hit, setHit] = useState(null)
