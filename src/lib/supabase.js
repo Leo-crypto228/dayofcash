@@ -1,0 +1,17 @@
+import { createClient } from '@supabase/supabase-js'
+
+const url = import.meta.env.VITE_SUPABASE_URL
+const anon = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+if (!url || !anon) {
+  // Helps diagnose a missing .env at build time.
+  console.error('Supabase env manquant : VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY')
+}
+
+export const supabase = createClient(url, anon, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    storageKey: 'dayofcash.auth',
+  },
+})
