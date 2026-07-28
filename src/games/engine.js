@@ -9,28 +9,58 @@ export const HOUSE_EDGE = 0.99 // baseline used for probability maths
 export const MULT_SCALE = 0.85
 export const scaleMult = (m) => Math.round(m * MULT_SCALE * 100) / 100
 
-// Hard ceiling on the net profit of any single resolved bet, no exception.
+// --- Balance-dependent return curve -----------------------------------------
+// The effective return rate is a decreasing function of the current balance:
+// generous while the player is low (real wins, real climb), progressively
+// brutal as the balance approaches the withdrawal target. The result is a
+// mean-reverting process with an equilibrium far below the goal.
+export const WITHDRAW_TARGET = 1000 // goal advertised to the player
+export const HARD_CEILING = 980     // balance can never go past this
+export const RTP_MAX = 1.03         // at balance 0 — the player really wins
+export const RTP_MIN = 0.70         // near the target — heavy drag
+export const RTP_POW = 2            // curve shape (2 = slow start, sharp end)
+export const ZENO_F = 0.5           // a win covers at most half the remaining gap
+
+export function rtpAt(balance) {
+  const r = Math.min(1, Math.max(0, (balance || 0) / WITHDRAW_TARGET))
+  return RTP_MAX - (RTP_MAX - RTP_MIN) * Math.pow(r, RTP_POW)
+}
+
+// 0 = no extra pressure (low balance) … 1 = maximum drag (at the target).
+// Games without an explicit win-probability use this to scale their difficulty.
+export function pressure(balance) {
+  return (RTP_MAX - rtpAt(balance)) / (RTP_MAX - RTP_MIN)
+}
+
+// Hard ceiling on the net profit of any single resolved bet.
+// Zeno: a win can only ever close a fraction of the distance to HARD_CEILING,
+// so the balance converges towards it without ever reaching it.
 export const MAX_WIN = 50
-export const capProfit = (profit) => Math.min(profit, MAX_WIN)
+export function capProfit(profit, balance = 0) {
+  const zeno = ZENO_F * Math.max(0, HARD_CEILING - (balance || 0))
+  return Math.min(profit, MAX_WIN, zeno)
+}
 // Total amount actually paid back for a bet at `mult` (stake + capped profit).
-export const capPayout = (bet, mult) => bet + capProfit(bet * mult - bet)
+export const capPayout = (bet, mult, balance = 0) =>
+  bet + capProfit(bet * mult - bet, balance)
 
 // House configuration — the real odds applied when resolving bets.
 export const RIG = {
-  rtp: 0.90,        // effective payout target (vs 0.99 displayed)
-  bigMult: 5,       // payouts >= this are considered "big"
-  bigCut: 0.55,     // big-win probability multiplier (crush the tail)
+  bigMult: 5,        // payouts >= this are considered "big"
+  bigCut: 0.55,      // big-win probability multiplier (crush the tail)
   hugeMult: 20,
-  hugeCut: 0.35,    // huge wins almost never land
-  microBoost: 1.04, // wins paying <= 1.5x land slightly more often (still < fair)
+  hugeCut: 0.35,     // huge wins almost never land
+  maxDeviation: 1.25, // never stray more than 25% from the advertised odds
 }
 
-// Effective win probability for a payout of `mult`, given the fair chance.
-export function riggedChance(fairChance, mult) {
-  let p = fairChance * (RIG.rtp / HOUSE_EDGE)
+// Effective win probability for a payout of `mult` at the player's balance.
+// Solves mult × p = rtpAt(balance) so the curve *is* the real return rate,
+// then clamps the deviation from the advertised odds so nothing looks absurd.
+export function riggedChance(fairChance, mult, balance = 0) {
+  let p = rtpAt(balance) / mult
+  p = Math.min(p, fairChance * RIG.maxDeviation)
   if (mult >= RIG.hugeMult) p *= RIG.hugeCut
   else if (mult >= RIG.bigMult) p *= RIG.bigCut
-  else if (mult <= 1.5) p *= RIG.microBoost
   return Math.max(0, Math.min(0.98, p))
 }
 
@@ -41,13 +71,14 @@ export const roll100 = () => Math.random() * 100
 export const diceMultiplier = (winChancePct) =>
   scaleMult((HOUSE_EDGE * 100) / winChancePct)
 
-// Limbo / Crash: crash-point sampler, house-tilted.
-export function sampleCrash() {
+// Limbo / Crash: crash-point sampler, house-tilted and balance-aware.
+export function sampleCrash(balance = 0) {
+  const q = pressure(balance)
   const r = Math.random()
-  if (r < 0.07) return 1.0 // instant-bust band
+  if (r < 0.07 + 0.13 * q) return 1.0 // instant-bust band widens with balance
   let m = 0.95 / (1 - r)
-  if (m > RIG.bigMult && Math.random() < 0.35) m = 1 + Math.random() * 0.8
-  if (m > 50 && Math.random() < 0.5) m = 2 + Math.random() * 3
+  if (m > RIG.bigMult && Math.random() < 0.35 + 0.35 * q) m = 1 + Math.random() * 0.8
+  if (m > 50 && Math.random() < 0.5 + 0.4 * q) m = 2 + Math.random() * 3
   return Math.max(1.0, Math.floor(m * 100) / 100)
 }
 
@@ -59,15 +90,16 @@ export function minesMultiplier(mines, revealed) {
   return revealed === 0 ? 1 : scaleMult(m * HOUSE_EDGE)
 }
 
-// Mines: real per-click bomb probability. Gets nastier as the multiplier grows.
-export function minesBombChance(minesLeft, tilesLeft, currentMult) {
+// Mines: real per-click bomb probability. Gets nastier as the multiplier grows
+// and as the balance climbs towards the target.
+export function minesBombChance(minesLeft, tilesLeft, currentMult, balance = 0) {
   const base = minesLeft / tilesLeft
   let f
   if (currentMult < 1.3) f = 0.85        // early clicks feel lucky
   else if (currentMult < 2) f = 1.2
   else if (currentMult < 4) f = 1.45
   else f = 1.75                          // deep runs die
-  return Math.min(0.95, base * f)
+  return Math.min(0.95, base * f * (1 + 0.55 * pressure(balance)))
 }
 
 export const round2 = (n) => Math.round(n * 100) / 100
@@ -93,7 +125,9 @@ export function plinkoPayouts(rows, risk) {
   return shape.map((s) => Math.max(0.1, round1(((s * HOUSE_EDGE) / denom) * MULT_SCALE)))
 }
 // Center pull strength: the ball is magnetically drawn back to the middle.
+// The pull tightens as the balance climbs, so edge (big) bins get rarer.
 export const PLINKO_PULL = 0.14
+export const plinkoPull = (balance = 0) => 0.11 + 0.16 * pressure(balance)
 
 // --- Cards ------------------------------------------------------------------
 export const SUITS = ['♠', '♥', '♦', '♣']
@@ -123,10 +157,11 @@ export function handValue(cards) {
   return total
 }
 
-// Blackjack: house-tilted dealer draw — peeks at the next two cards and,
-// 35% of the time, takes whichever helps the dealer more.
-export function dealerDraw(deck, dealerCards) {
-  if (deck.length < 2 || Math.random() >= 0.35) return deck.pop()
+// Blackjack: house-tilted dealer draw — peeks at the next two cards and takes
+// whichever helps the dealer more. Cheat rate grows with the balance.
+export function dealerDraw(deck, dealerCards, balance = 0) {
+  const rate = 0.25 + 0.35 * pressure(balance)
+  if (deck.length < 2 || Math.random() >= rate) return deck.pop()
   const a = deck[deck.length - 1]
   const b = deck[deck.length - 2]
   const score = (card) => {
@@ -140,10 +175,11 @@ export function dealerDraw(deck, dealerCards) {
   return pick
 }
 
-// Hilo: adversarial next card — 30% of the time the deck "chooses" a loser.
-export function hiloDraw(deck, cur, dir) {
+// Hilo: adversarial next card — the deck "chooses" a loser more often as the
+// balance approaches the target.
+export function hiloDraw(deck, cur, dir, balance = 0) {
   if (deck.length === 0) return null
-  if (Math.random() < 0.30) {
+  if (Math.random() < 0.20 + 0.35 * pressure(balance)) {
     const losers = deck.filter((c) => (dir === 'higher' ? c.v < cur : c.v > cur))
     if (losers.length) {
       const pick = losers[Math.floor(Math.random() * losers.length)]

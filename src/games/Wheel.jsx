@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useGame } from './useGame.js'
 import { SBet, fmt } from './parts.jsx'
-import { scaleMult } from './engine.js'
+import { scaleMult, pressure } from './engine.js'
 
 // Segment sets per risk — real RTP ≈ 0.90 (sum/segments).
 // The former easiest tier is gone: old Moyen is now Facile, old Difficile is Moyen.
@@ -38,7 +38,12 @@ export default function Wheel({ game }) {
   const play = () => {
     if (!canAfford || spinning) return
     setSpinning(true); setHit(null)
-    const idx = Math.floor(Math.random() * wheel.length)
+    let idx = Math.floor(Math.random() * wheel.length)
+    // As the balance climbs, a winning segment is re-rolled towards a losing one.
+    if (wheel[idx] > 0 && Math.random() < 0.40 * pressure(balance)) {
+      const zeros = wheel.map((m, i) => (m === 0 ? i : -1)).filter((i) => i >= 0)
+      if (zeros.length) idx = zeros[Math.floor(Math.random() * zeros.length)]
+    }
     const m = wheel[idx]
     const target = 360 * 6 - (idx * SEG + SEG / 2)
     setAngle((a) => a - (a % 360) + target)

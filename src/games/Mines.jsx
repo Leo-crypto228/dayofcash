@@ -26,7 +26,7 @@ export default function Mines({ game }) {
   const clickTile = (i) => {
     if (!playing || dead || revealed.includes(i)) return
     const tilesLeft = TOTAL - revealed.length
-    const p = minesBombChance(mineCount, tilesLeft, mult)
+    const p = minesBombChance(mineCount, tilesLeft, mult, balance)
     if (Math.random() < p) {
       // Reveal: clicked cell is a bomb; scatter the rest for display.
       const pool = Array.from({ length: TOTAL }, (_, k) => k).filter((k) => k !== i && !revealed.includes(k))
@@ -72,7 +72,7 @@ export default function Mines({ game }) {
       </div>
 
       {playing && safeRevealed > 0 ? (
-        <button className="s-action green" onClick={cashout}>Encaisser {fmt(capPayout(bet, mult))}</button>
+        <button className="s-action green" onClick={cashout}>Encaisser {fmt(capPayout(bet, mult, balance))}</button>
       ) : (
         <button className="s-action" onClick={start} disabled={!canAfford || playing}>Pari</button>
       )}
@@ -97,7 +97,7 @@ export default function Mines({ game }) {
       <div className="mines-profit">
         <div>
           <div className="lbl">Profit total ({mult.toFixed(2)}×)</div>
-          <div className="val">{fmt(Math.max(0, capProfit(profit)))}</div>
+          <div className="val">{fmt(Math.max(0, capProfit(profit, balance)))}</div>
         </div>
         <span className="sbet-coin">€</span>
       </div>

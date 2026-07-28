@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useGame } from './useGame.js'
-import { plinkoPayouts, PLINKO_PULL } from './engine.js'
+import { plinkoPayouts, plinkoPull } from './engine.js'
 import { SBet } from './parts.jsx'
 
 // The former "Low" tier is gone: Medium is now shown as Facile, High as Moyen.
@@ -40,7 +40,8 @@ export default function Plinko({ game }) {
     setBall({ step: 0, net: 0 })
     timer.current = setInterval(() => {
       // Center pull: the further from center, the more it drifts back.
-      const pRight = net > 0 ? 0.5 - PLINKO_PULL : net < 0 ? 0.5 + PLINKO_PULL : 0.5
+      const pull = plinkoPull(balance)
+      const pRight = net > 0 ? 0.5 - pull : net < 0 ? 0.5 + pull : 0.5
       net += Math.random() < pRight ? 1 : -1
       step += 1
       setBall({ step, net })

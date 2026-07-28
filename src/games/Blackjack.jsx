@@ -121,7 +121,7 @@ export default function Blackjack({ game }) {
     const dealerCards = [...dealer]
     const step = () => {
       if (alive && handValue(dealerCards) < 17) {
-        dealerCards.push(dealerDraw(shoeRef.current, dealerCards))
+        dealerCards.push(dealerDraw(shoeRef.current, dealerCards, balance))
         setDealer([...dealerCards])
         later(step, 650)
       } else later(() => resolve(h, dealerCards), 450)

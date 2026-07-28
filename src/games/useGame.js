@@ -28,8 +28,9 @@ export function useGame(gameName, defaultBet = 1) {
   // delta = net change (win: +profit, loss: -bet). meta.mult shows on toast.
   const settle = useCallback(
     (delta, meta = {}) => {
-      // Hard cap: a single bet can never pay more than MAX_WIN in profit.
-      const d = round2(delta > 0 ? capProfit(delta) : delta)
+      // Hard cap: MAX_WIN, plus the Zeno rule (a win only closes part of the
+      // remaining gap to the ceiling), so the balance can never reach it.
+      const d = round2(delta > 0 ? capProfit(delta, balance) : delta)
       dispatch({ type: 'BET_RESULT', delta: d, game: gameName })
       if (d > 0) {
         playWin()
@@ -48,7 +49,7 @@ export function useGame(gameName, defaultBet = 1) {
         push({ kind: 'result', tone: 'neutral', title: 'Égalité', sub: 'mise rendue' })
       }
     },
-    [dispatch, gameName, push]
+    [dispatch, gameName, push, balance]
   )
 
   const half = () => setBet(bet / 2)

@@ -43,7 +43,7 @@ export default function Crash({ game }) {
 
   const start = () => {
     if (!canAfford || phase === 'running') return
-    crashAt.current = sampleCrash()
+    crashAt.current = sampleCrash(balance)
     cashedRef.current = false
     startTs.current = performance.now()
     ptsRef.current = [{ t: 0, m: 1 }]
@@ -93,7 +93,7 @@ export default function Crash({ game }) {
       </div>
 
       {phase === 'running' && !cashedRef.current ? (
-        <button className="s-action green" onClick={cashout}>Encaisser {fmt(capPayout(bet, scaleMult(mult)))}</button>
+        <button className="s-action green" onClick={cashout}>Encaisser {fmt(capPayout(bet, scaleMult(mult), balance))}</button>
       ) : (
         <button className="s-action" onClick={start} disabled={!canAfford || phase === 'running'}>Pari</button>
       )}

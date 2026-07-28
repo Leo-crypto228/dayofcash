@@ -18,7 +18,7 @@ export default function Dice({ game }) {
     if (!canAfford || rolling) return
     setRolling(true)
     // House decides the outcome, then fabricates a consistent roll.
-    const isWin = Math.random() < riggedChance(winChance / 100, mult)
+    const isWin = Math.random() < riggedChance(winChance / 100, mult, balance)
     let r
     if (dir === 'under') r = isWin ? Math.random() * target : target + Math.random() * (100 - target)
     else r = isWin ? target + Math.random() * (100 - target) : Math.random() * target

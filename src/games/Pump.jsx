@@ -70,7 +70,7 @@ export default function Pump({ game }) {
       {playing ? (
         <>
           <button className="s-action green" onClick={cashout} disabled={pumps === 0}>
-            Encaisser {fmt(capPayout(bet, mult))}
+            Encaisser {fmt(capPayout(bet, mult, balance))}
           </button>
           <button className="s-action grey" onClick={pump}>Gonfler</button>
         </>
@@ -83,7 +83,7 @@ export default function Pump({ game }) {
       <div className="mines-profit">
         <div>
           <div className="lbl">Profit total ({mult.toFixed(2)}×)</div>
-          <div className="val">{fmt(Math.max(0, capProfit(bet * mult - bet)))}</div>
+          <div className="val">{fmt(Math.max(0, capProfit(bet * mult - bet, balance)))}</div>
         </div>
         <span className="sbet-coin">€</span>
       </div>

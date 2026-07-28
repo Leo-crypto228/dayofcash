@@ -17,7 +17,7 @@ export default function Limbo({ game }) {
     if (!canAfford || rolling) return
     setRolling(true)
     // House decides, then fabricates a consistent multiplier.
-    const isWin = Math.random() < riggedChance(HOUSE_EDGE / t, t)
+    const isWin = Math.random() < riggedChance(HOUSE_EDGE / t, t, balance)
     let r
     if (isWin) r = round2(t * (1 - Math.log(1 - Math.random()) * 0.35))
     else r = round2(1 + (t - 1) * Math.pow(Math.random(), 1.6))
@@ -60,7 +60,7 @@ export default function Limbo({ game }) {
       <div className="s-field">
         <label>Profit sur une Victoire</label>
         <div className="s-box">
-          <span style={{ color: 'var(--s-text)', fontWeight: 600 }}>{fmt(Math.max(0, capProfit(bet * scaleMult(t) - bet)))}</span>
+          <span style={{ color: 'var(--s-text)', fontWeight: 600 }}>{fmt(Math.max(0, capProfit(bet * scaleMult(t) - bet, balance)))}</span>
           <span className="sbet-coin">€</span>
         </div>
       </div>
