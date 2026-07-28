@@ -3,7 +3,11 @@
 // actual outcomes are house-tilted: small wins stay frequent (dopamine),
 // big multipliers are heavily crushed, so balances stagnate then bleed.
 
-export const HOUSE_EDGE = 0.99 // what the UI *displays* (fair-looking)
+export const HOUSE_EDGE = 0.99 // baseline used for probability maths
+
+// Every payout multiplier is shaved by 15%.
+export const MULT_SCALE = 0.85
+export const scaleMult = (m) => Math.round(m * MULT_SCALE * 100) / 100
 
 // Hard ceiling on the net profit of any single resolved bet, no exception.
 export const MAX_WIN = 50
@@ -33,9 +37,9 @@ export function riggedChance(fairChance, mult) {
 export const rnd = () => Math.random()
 export const roll100 = () => Math.random() * 100
 
-// Dice: displayed multiplier for a win chance (fair-looking).
+// Dice: payout multiplier for a win chance (already shaved by MULT_SCALE).
 export const diceMultiplier = (winChancePct) =>
-  round2((HOUSE_EDGE * 100) / winChancePct)
+  scaleMult((HOUSE_EDGE * 100) / winChancePct)
 
 // Limbo / Crash: crash-point sampler, house-tilted.
 export function sampleCrash() {
@@ -47,12 +51,12 @@ export function sampleCrash() {
   return Math.max(1.0, Math.floor(m * 100) / 100)
 }
 
-// Mines: fair-looking multiplier ladder (display only).
+// Mines: payout ladder, shaved by MULT_SCALE.
 export function minesMultiplier(mines, revealed) {
   const total = 25
   let m = 1
   for (let i = 0; i < revealed; i++) m *= (total - i) / (total - mines - i)
-  return round2(m * HOUSE_EDGE)
+  return revealed === 0 ? 1 : scaleMult(m * HOUSE_EDGE)
 }
 
 // Mines: real per-click bomb probability. Gets nastier as the multiplier grows.
@@ -86,7 +90,7 @@ export function plinkoPayouts(rows, risk) {
     shape[k] = eps + Math.pow(Math.abs(k - half) / half, b)
   }
   const denom = w.reduce((s, wk, k) => s + wk * shape[k], 0)
-  return shape.map((s) => Math.max(0.1, round1((s * HOUSE_EDGE) / denom)))
+  return shape.map((s) => Math.max(0.1, round1(((s * HOUSE_EDGE) / denom) * MULT_SCALE)))
 }
 // Center pull strength: the ball is magnetically drawn back to the middle.
 export const PLINKO_PULL = 0.14

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useGame } from './useGame.js'
 import { SBet, fmt } from './parts.jsx'
+import { scaleMult } from './engine.js'
 
 // Segment sets per risk — real RTP ≈ 0.90 (sum/segments).
 // The former easiest tier is gone: old Moyen is now Facile, old Difficile is Moyen.
@@ -30,8 +31,8 @@ export default function Wheel({ game }) {
   const [spinning, setSpinning] = useState(false)
   const [hit, setHit] = useState(null)
 
-  const wheel = useMemo(() => spread(CONFIGS[risk]), [risk])
-  const distinct = useMemo(() => [...new Set(CONFIGS[risk])].sort((a, b) => a - b), [risk])
+  const wheel = useMemo(() => spread(CONFIGS[risk].map((m) => (m > 0 ? scaleMult(m) : 0))), [risk])
+  const distinct = useMemo(() => [...new Set(CONFIGS[risk].map((m) => (m > 0 ? scaleMult(m) : 0)))].sort((a, b) => a - b), [risk])
   const SEG = 360 / wheel.length
 
   const play = () => {

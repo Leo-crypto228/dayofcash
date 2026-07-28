@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useGame } from './useGame.js'
-import { HOUSE_EDGE, riggedChance, round2, capProfit } from './engine.js'
+import { HOUSE_EDGE, riggedChance, round2, capProfit, scaleMult } from './engine.js'
 import { SBet, fmt } from './parts.jsx'
 
 export default function Limbo({ game }) {
@@ -25,7 +25,7 @@ export default function Limbo({ game }) {
     if (!isWin && r >= t) r = round2(Math.max(1, t - 0.01))
     setResult(r)
     setWon(isWin)
-    settle(isWin ? bet * t - bet : -bet, { mult: t.toFixed(2) })
+    settle(isWin ? bet * scaleMult(t) - bet : -bet, { mult: scaleMult(t).toFixed(2) })
     setTimeout(() => setRolling(false), 260)
   }
 
@@ -60,7 +60,7 @@ export default function Limbo({ game }) {
       <div className="s-field">
         <label>Profit sur une Victoire</label>
         <div className="s-box">
-          <span style={{ color: 'var(--s-text)', fontWeight: 600 }}>{fmt(Math.max(0, capProfit(bet * t - bet)))}</span>
+          <span style={{ color: 'var(--s-text)', fontWeight: 600 }}>{fmt(Math.max(0, capProfit(bet * scaleMult(t) - bet)))}</span>
           <span className="sbet-coin">€</span>
         </div>
       </div>

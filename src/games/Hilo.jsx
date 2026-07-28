@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useGame } from './useGame.js'
-import { freshDeck, HOUSE_EDGE, isRed, round2, hiloDraw, capPayout, capProfit } from './engine.js'
+import { freshDeck, HOUSE_EDGE, isRed, round2, hiloDraw, capPayout, capProfit, scaleMult } from './engine.js'
 import { SBet, fmt } from './parts.jsx'
 
 export default function Hilo({ game }) {
@@ -18,8 +18,8 @@ export default function Hilo({ game }) {
   const lowerCount = deck.filter((c) => c.v <= cur).length
   const pHigher = higherCount / remaining
   const pLower = lowerCount / remaining
-  const stepHigher = pHigher > 0 ? round2(HOUSE_EDGE / pHigher) : 0
-  const stepLower = pLower > 0 ? round2(HOUSE_EDGE / pLower) : 0
+  const stepHigher = pHigher > 0 ? scaleMult(HOUSE_EDGE / pHigher) : 0
+  const stepLower = pLower > 0 ? scaleMult(HOUSE_EDGE / pLower) : 0
 
   const start = () => {
     if (!canAfford) return

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useGame } from './useGame.js'
-import { HOUSE_EDGE, round2, capPayout, capProfit } from './engine.js'
+import { HOUSE_EDGE, round2, capPayout, capProfit, scaleMult } from './engine.js'
 import { SBet, fmt } from './parts.jsx'
 
 // Former easiest tier removed: old Moyen is now Facile, old Difficile is Moyen.
@@ -16,7 +16,7 @@ export default function Pump({ game }) {
 
   const p = DIFF[diff]
   // Displayed ladder looks fair; the real pop chance climbs with each pump.
-  const multAt = (n) => round2(HOUSE_EDGE / Math.pow(1 - p, n))
+  const multAt = (n) => scaleMult(HOUSE_EDGE / Math.pow(1 - p, n))
   const popChance = (n) => Math.min(0.9, p * (1 + n * 0.13))
   const mult = pumps === 0 ? 1 : multAt(pumps)
   const prevMult = pumps <= 1 ? 1 : multAt(pumps - 1)

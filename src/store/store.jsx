@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
+import { DEFAULT_AVATAR } from '../lib/avatar.js'
 import { useAuth } from './auth.jsx'
 
 const round2 = (n) => Math.round(n * 100) / 100
@@ -44,7 +45,7 @@ export function StoreProvider({ children }) {
     setState({
       user: {
         name: prof?.name || user.name,
-        avatar: loadAvatar(user.id) || `https://i.pravatar.cc/120?u=${encodeURIComponent(user.email)}`,
+        avatar: loadAvatar(user.id) || DEFAULT_AVATAR,
       },
       balance: Number(prof?.balance ?? 0),
       target: Number(prof?.target ?? 1000),

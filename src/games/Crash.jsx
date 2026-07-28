@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useGame } from './useGame.js'
-import { sampleCrash, round2, capPayout } from './engine.js'
+import { sampleCrash, round2, capPayout, scaleMult } from './engine.js'
 import { SBet, fmt } from './parts.jsx'
 
 const K = 0.10 // growth rate
@@ -35,7 +35,7 @@ export default function Crash({ game }) {
     const target = Number(cashAt)
     if (!cashedRef.current && target >= 1.01 && m >= target) {
       cashedRef.current = true
-      settle(bet * target - bet, { mult: target.toFixed(2) })
+      settle(bet * scaleMult(target) - bet, { mult: scaleMult(target).toFixed(2) })
     }
     if (m >= crashAt.current) { finish(crashAt.current); return }
     setMult(m)
@@ -54,7 +54,7 @@ export default function Crash({ game }) {
   const cashout = () => {
     if (phase !== 'running' || cashedRef.current) return
     cashedRef.current = true
-    settle(bet * mult - bet, { mult: mult.toFixed(2) })
+    settle(bet * scaleMult(mult) - bet, { mult: scaleMult(mult).toFixed(2) })
   }
 
   // Live curve: x = time (window grows), y = multiplier vs stepped max.
@@ -93,7 +93,7 @@ export default function Crash({ game }) {
       </div>
 
       {phase === 'running' && !cashedRef.current ? (
-        <button className="s-action green" onClick={cashout}>Encaisser {fmt(capPayout(bet, mult))}</button>
+        <button className="s-action green" onClick={cashout}>Encaisser {fmt(capPayout(bet, scaleMult(mult)))}</button>
       ) : (
         <button className="s-action" onClick={start} disabled={!canAfford || phase === 'running'}>Pari</button>
       )}
