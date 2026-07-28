@@ -35,29 +35,30 @@ const AIRLINES = [
 ]
 
 // Load More : jets privés, îles privées, palaces — real, reliable sites.
+// Same big-card layout as the airlines (photo + logo).
 const MORE = [
-  { name: 'NetJets', sub: 'Jets privés à la demande', cb: '10% Back', url: 'https://www.netjets.com', cta: 'Continuer vers NetJets',
+  { name: 'NetJets', sub: 'Jets privés à la demande', cb: '10% Cashback', url: 'https://www.netjets.com', cta: 'Continuer vers NetJets',
+    photo: '/luxe/ultra/netjets.jpg', logo: '/luxe/ultra/netjets-logo.png',
     desc: 'Le leader mondial du jet privé, disponible en quelques heures.',
     perks: ['10% de cashback', 'Flotte de +750 jets', 'Départ en 4h partout dans le monde', 'Équipage dédié'] },
-  { name: 'VistaJet', sub: 'Vols privés mondiaux', cb: '8% Back', url: 'https://www.vistajet.com', cta: 'Continuer vers VistaJet',
-    desc: 'Cabines argent et rouge iconiques, service cinq étoiles en vol.',
-    perks: ['8% de cashback', 'Couverture mondiale 187 pays', 'Chef à bord sur demande', 'Confidentialité totale'] },
-  { name: 'Aman', sub: 'Resorts d’exception', cb: '12% Back', url: 'https://www.aman.com', cta: 'Continuer vers Aman',
-    desc: 'Des sanctuaires discrets dans les plus beaux lieux du monde.',
-    perks: ['12% de cashback', 'Spas légendaires', 'Villas ultra-privées', 'Expériences sur-mesure'] },
-  { name: 'Soneva', sub: 'Îles privées · Maldives', cb: '14% Back', url: 'https://soneva.com', cta: 'Continuer vers Soneva',
+  { name: 'Soneva', sub: 'Îles privées · Maldives', cb: '14% Cashback', url: 'https://soneva.com', cta: 'Continuer vers Soneva',
+    photo: '/luxe/ultra/soneva.jpg', logo: '/luxe/ultra/soneva-logo.png',
     desc: 'Villas pieds dans l’eau sur des îles privées des Maldives.',
     perks: ['14% de cashback', 'Villas avec toboggan privé', 'Observatoire & cinéma en plein air', 'Barefoot luxury'] },
-  { name: 'The Brando', sub: 'Île privée · Polynésie', cb: '12% Back', url: 'https://thebrando.com', cta: 'Continuer vers The Brando',
+  { name: 'Aman', sub: 'Resorts d’exception', cb: '12% Cashback', url: 'https://www.aman.com', cta: 'Continuer vers Aman',
+    photo: '/luxe/ultra/aman.jpg', logo: '/luxe/ultra/aman-logo.png',
+    desc: 'Des sanctuaires discrets dans les plus beaux lieux du monde.',
+    perks: ['12% de cashback', 'Spas légendaires', 'Villas ultra-privées', 'Expériences sur-mesure'] },
+  { name: 'The Brando', sub: 'Île privée · Polynésie', cb: '12% Cashback', url: 'https://thebrando.com', cta: 'Continuer vers The Brando',
+    photo: '/luxe/ultra/brando.jpg', logo: '/luxe/ultra/brando-logo.png',
     desc: 'L’atoll privé mythique de Tetiaroa, refuge des stars.',
     perks: ['12% de cashback', 'Atoll 100% privé', 'Éco-resort d’exception', 'Plages désertes garanties'] },
-  { name: 'Necker Island', sub: 'Île privée · Caraïbes', cb: '15% Back', url: 'https://www.virginlimitededition.com', cta: 'Continuer vers Necker Island',
+  { name: 'Necker Island', sub: 'Île privée · Caraïbes', cb: '15% Cashback', url: 'https://www.virginlimitededition.com', cta: 'Continuer vers Necker Island',
+    photo: '/luxe/ultra/necker.jpg', logo: '/luxe/ultra/necker-logo.png',
     desc: 'L’île privée de Richard Branson, privatisable en entier.',
     perks: ['15% de cashback', 'Île entière privatisable', 'Sports nautiques illimités', 'Jusqu’à 48 invités'] },
-  { name: 'Belmond', sub: 'Palaces & trains de légende', cb: '9% Back', url: 'https://www.belmond.com', cta: 'Continuer vers Belmond',
-    desc: 'Palaces, safaris et trains mythiques comme le Venice Simplon-Orient-Express.',
-    perks: ['9% de cashback', 'Trains de légende', 'Palaces historiques', 'Croisières fluviales'] },
-  { name: 'Burj Al Arab', sub: 'Jumeirah · Dubaï', cb: '11% Back', url: 'https://www.jumeirah.com', cta: 'Continuer vers Jumeirah',
+  { name: 'Burj Al Arab', sub: 'Jumeirah · Dubaï', cb: '11% Cashback', url: 'https://www.jumeirah.com', cta: 'Continuer vers Jumeirah',
+    photo: '/luxe/ultra/jumeirah.jpg', logo: '/luxe/ultra/jumeirah-logo.png',
     desc: 'La voile la plus célèbre du monde, suites en duplex et service majordome.',
     perks: ['11% de cashback', 'Suites duplex avec majordome', 'Flotte de Rolls-Royce', 'Plage & rooftop privés'] },
 ]
@@ -138,17 +139,22 @@ export default function Explore() {
           <div className="lux-sec-head">
             <h3>Ultra Luxe</h3>
           </div>
-          <div className="lux-partners">
+          <div className="lux-airlines">
             {MORE.map((p) => (
-              <button key={p.name} className="lux-partner" onClick={() => setSel(p)}>
-                <div className="lux-partner-left">
-                  <div className="lux-mono">{p.name[0]}</div>
+              <button key={p.name} className="lux-airline" onClick={() => setSel(p)}>
+                <div className="lux-airline-media">
+                  <img src={p.photo} alt={p.name} onError={hideOnErr} />
+                  <span className="lux-badge tr">{p.cb}</span>
+                </div>
+                <div className="lux-airline-foot">
+                  <div className="lux-airline-logo">
+                    <img src={p.logo} alt={p.name} onError={hideOnErr} />
+                  </div>
                   <div>
                     <div className="lux-partner-name">{p.name}</div>
                     <div className="lux-partner-sub">{p.sub}</div>
                   </div>
                 </div>
-                <span className="lux-pill">{p.cb}</span>
               </button>
             ))}
           </div>

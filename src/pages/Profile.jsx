@@ -21,15 +21,54 @@ export default function Profile() {
 
   const close = () => { setModal(null); setAmount('') }
 
-  // Real scannable QR — links to the app with the user's pseudo.
+  // Real scannable QR with the pseudo drawn in the middle.
+  // Error-correction level H (30% redundancy) keeps it readable despite the
+  // centre label covering part of the code.
   const [qrUrl, setQrUrl] = useState(null)
+  const pseudo = state.user.name || user?.name || ''
   useEffect(() => {
     if (modal !== 'qr') return
+    let cancelled = false
     const payload = `https://dayofcash.pages.dev/?to=${encodeURIComponent(user?.email || '')}`
-    QRCode.toDataURL(payload, { width: 420, margin: 1, color: { dark: '#0b1220', light: '#ffffff' } })
-      .then(setQrUrl)
+    const canvas = document.createElement('canvas')
+    QRCode.toCanvas(canvas, payload, {
+      width: 560, margin: 1, errorCorrectionLevel: 'H',
+      color: { dark: '#0b1220', light: '#ffffff' },
+    })
+      .then(() => {
+        if (cancelled) return
+        const ctx = canvas.getContext('2d')
+        const W = canvas.width
+        const label = '@' + pseudo
+        ctx.font = `700 ${Math.round(W * 0.062)}px -apple-system, "Segoe UI", Roboto, sans-serif`
+        const textW = ctx.measureText(label).width
+        const boxW = Math.min(W * 0.56, textW + W * 0.075)
+        const boxH = W * 0.13
+        const x = (W - boxW) / 2
+        const y = (W - boxH) / 2
+        const r = boxH * 0.28
+        // white plate with a dark outline
+        ctx.beginPath()
+        ctx.moveTo(x + r, y)
+        ctx.arcTo(x + boxW, y, x + boxW, y + boxH, r)
+        ctx.arcTo(x + boxW, y + boxH, x, y + boxH, r)
+        ctx.arcTo(x, y + boxH, x, y, r)
+        ctx.arcTo(x, y, x + boxW, y, r)
+        ctx.closePath()
+        ctx.fillStyle = '#ffffff'
+        ctx.fill()
+        ctx.lineWidth = W * 0.012
+        ctx.strokeStyle = '#0b1220'
+        ctx.stroke()
+        ctx.fillStyle = '#0b1220'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        ctx.fillText(label, W / 2, y + boxH / 2, boxW - W * 0.05)
+        setQrUrl(canvas.toDataURL('image/png'))
+      })
       .catch(() => setQrUrl(null))
-  }, [modal, user])
+    return () => { cancelled = true }
+  }, [modal, user, pseudo])
 
   const submitDeposit = () => {
     if (Number(amount) > 0) playCash()
@@ -193,7 +232,6 @@ export default function Profile() {
       <Modal open={modal === 'qr'} title="QR Code" onClose={close}>
         <div className="qr-wrap">
           {qrUrl ? <img className="qr-img" src={qrUrl} alt="QR code" /> : <div className="qr-loading">Génération…</div>}
-          <div className="qr-pseudo">@{state.user.name || user?.name || ''}</div>
           <p className="muted">Scanne pour recevoir un paiement sur ton compte dayofcash.</p>
         </div>
       </Modal>
