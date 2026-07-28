@@ -638,22 +638,14 @@ body {
 .lg-strip {
   flex: 0 0 auto;
   overflow: hidden;
-  margin-bottom: 16px;
+  margin-bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
-.lg-strip:last-child { margin-bottom: calc(22px + env(safe-area-inset-bottom, 0px)); }
 .lg-track { display: flex; gap: 12px; width: max-content; animation: slide 46s linear infinite; }
 .lg-track.rev { animation: slideRev 52s linear infinite; }
 @keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes slideRev { from { transform: translateX(-50%); } to { transform: translateX(0); } }
-
-.lg-tile {
-  flex: 0 0 auto; width: 76px; aspect-ratio: 3 / 4;
-  border-radius: 14px; overflow: hidden; background: #eef1f4;
-  box-shadow: 0 4px 12px rgba(13, 28, 50, 0.10);
-}
-.lg-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .lg-chip {
   flex: 0 0 auto; display: flex; align-items: center; gap: 8px;

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useAuth } from '../store/auth.jsx'
-import { GAMES } from '../data/games.js'
 
 // Small travel-partner chips shown in the reverse-scrolling strip.
 const TRAVEL = [
@@ -84,18 +83,7 @@ export default function Login() {
         </form>
       </div>
 
-      {/* Games scrolling one way… */}
-      <div className="lg-strip">
-        <div className="lg-track">
-          {[...GAMES, ...GAMES].map((g, i) => (
-            <div className="lg-tile" key={g.id + i}>
-              <img src={g.img} alt="" />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* …travel partners scrolling the other way. */}
+      {/* Travel partners scrolling past the form. */}
       <div className="lg-strip">
         <div className="lg-track rev">
           {[...TRAVEL, ...TRAVEL].map((t, i) => (
