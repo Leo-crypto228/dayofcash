@@ -137,10 +137,6 @@ export default function Profile() {
         </div>
       </section>
 
-      <p className="cashback-note">
-        Cashback récupérable à partir de 5 000 € de dépenses sur les sites de voyage.
-      </p>
-
       {/* Actions */}
       <div className="actions">
         <button className="action" onClick={() => setModal('deposit')}>
