@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { Menu } from './icons.jsx'
+import Logo from './Logo.jsx'
 import { useStore } from '../store/store.jsx'
 
 export default function TopBar({ onMenu }) {
@@ -31,7 +32,7 @@ export default function TopBar({ onMenu }) {
       <button className="icon-btn" aria-label="Menu" onClick={onMenu}>
         <Menu />
       </button>
-      <div className="brand">dayofcash</div>
+      <div className="brand"><Logo size={22} /><span>Janero</span></div>
       <img
         className="avatar"
         src={state.user.avatar}

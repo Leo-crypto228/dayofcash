@@ -232,7 +232,7 @@ export default function Profile() {
       <Modal open={modal === 'qr'} title="QR Code" onClose={close}>
         <div className="qr-wrap">
           {qrUrl ? <img className="qr-img" src={qrUrl} alt="QR code" /> : <div className="qr-loading">Génération…</div>}
-          <p className="muted">Scanne pour recevoir un paiement sur ton compte dayofcash.</p>
+          <p className="muted">Scanne pour recevoir un paiement sur ton compte Janero.</p>
         </div>
       </Modal>
 

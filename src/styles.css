@@ -54,10 +54,13 @@ body {
   border-bottom: 1px solid var(--line);
 }
 .brand {
-  text-align: center;
-  font-weight: 700;
-  letter-spacing: 4px;
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  font-size: 17px;
   color: var(--ink);
 }
 .avatar {
@@ -580,9 +583,12 @@ body {
 .lg-brand {
   flex: 0 0 auto;
   padding: 22px 24px 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
   font-weight: 800;
-  letter-spacing: 2px;
-  font-size: 17px;
+  letter-spacing: 0.5px;
+  font-size: 20px;
   color: #0d1c32;
 }
 .lg-body { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; padding: 24px 24px 28px; }
@@ -758,7 +764,10 @@ body {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
   background: radial-gradient(120% 80% at 50% -10%, #14233f 0%, #0b1220 55%, #080c14 100%);
 }
-.splash-logo { font-weight: 800; letter-spacing: 8px; font-size: 26px; color: #fff; }
+.splash-logo {
+  display: flex; align-items: center; gap: 12px;
+  font-weight: 800; letter-spacing: 1px; font-size: 28px; color: #fff;
+}
 .spinner {
   width: 34px; height: 34px; border-radius: 50%;
   border: 3px solid rgba(255,255,255,0.15); border-top-color: #00e701;

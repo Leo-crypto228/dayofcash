@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../store/auth.jsx'
+import Logo from '../components/Logo.jsx'
 
 // Small travel-partner chips shown in the reverse-scrolling strip.
 const TRAVEL = [
@@ -39,7 +40,7 @@ export default function Login() {
 
   return (
     <div className="lg">
-      <div className="lg-brand">dayofcash</div>
+      <div className="lg-brand"><Logo size={26} /><span>Janero</span></div>
 
       <div className="lg-body">
         <h1 className="lg-title">{mode === 'signup' ? 'Créer ton compte' : 'Se connecter'}</h1>
