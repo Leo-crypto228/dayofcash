@@ -12,7 +12,7 @@ export default function Root() {
     return (
       <div className="phone">
         <div className="splash">
-          <div className="splash-logo"><Logo size={44} /><span>Janero</span></div>
+          <div className="splash-logo"><Logo size={44} light /><span>Janero</span></div>
           <div className="spinner" />
         </div>
       </div>
