@@ -184,6 +184,17 @@ body {
   gap: 8px;
   margin: 22px 0 6px;
 }
+.actions-center {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+}
+.withdraw-notice {
+  margin: 10px 0 6px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted, #6b7280);
+}
 .action {
   border: none;
   background: transparent;

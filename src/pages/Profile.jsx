@@ -5,7 +5,7 @@ import { useAuth } from '../store/auth.jsx'
 import { playCash } from '../store/sound.js'
 import Modal from '../components/Modal.jsx'
 import {
-  Bank, ArrowDownLeft, ArrowUpRight, QR,
+  Bank, ArrowUpRight, QR,
   User, Shield, Bell, Headset, Logout, Chevron,
 } from '../components/icons.jsx'
 
@@ -14,6 +14,7 @@ export default function Profile() {
   const { user, logout, isAdmin, listAccounts, adminCredit } = useAuth()
   const [modal, setModal] = useState(null) // 'deposit' | 'withdraw' | 'qr' | settings key
   const [amount, setAmount] = useState('')
+  const [withdrawNotice, setWithdrawNotice] = useState(false)
 
   const remaining = Math.max(0, state.target - state.balance)
   const progress = Math.min(100, (state.balance / state.target) * 100)
@@ -138,24 +139,24 @@ export default function Profile() {
       </section>
 
       {/* Actions */}
-      <div className="actions">
-        <button className="action" onClick={() => setModal('deposit')}>
-          <span className="action-circle"><ArrowDownLeft /></span>
-          <span className="action-label">Deposit</span>
-        </button>
+      <div className="actions actions-center">
         <button className="action" onClick={() => setModal('qr')}>
           <span className="action-circle dark"><QR /></span>
           <span className="action-label">QR Code</span>
         </button>
         <button
           className="action"
-          onClick={() => canWithdraw && setModal('withdraw')}
-          disabled={!canWithdraw}
+          onClick={() => canWithdraw ? setModal('withdraw') : setWithdrawNotice(true)}
         >
           <span className="action-circle"><ArrowUpRight /></span>
           <span className="action-label">Withdraw</span>
         </button>
       </div>
+      {withdrawNotice && !canWithdraw && (
+        <div className="withdraw-notice" role="status">
+          Tu pourras retirer l'argent une fois les {formatEUR(state.target).replace(',00', '')} atteints.
+        </div>
+      )}
 
       {/* Settings */}
       <h2 className="section-title">Settings</h2>
